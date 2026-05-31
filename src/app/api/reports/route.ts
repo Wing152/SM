@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -30,8 +31,10 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    // In a real app, check for ADMIN role
-    if (!session || !session.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    // Role-based check for ADMIN
+    if (!session || !session.user || session.user.role !== "ADMIN") {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
 
     const reports = await prisma.report.findMany({
       include: { reporter: { select: { username: true } } },
