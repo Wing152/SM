@@ -22,9 +22,14 @@ export function InfiniteFeed() {
     try {
       const url = `/api/feed${cursor ? `?cursor=${cursor}` : ""}`;
       const res = await fetch(url);
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch feed");
+      }
+
       const data = await res.json();
 
-      setPredictions(prev => [...prev, ...data.items]);
+      setPredictions(prev => [...prev, ...(data?.items || [])]);
       setCursor(data.nextCursor);
       if (!data.nextCursor) setHasMore(false);
     } catch (err) {
@@ -35,7 +40,7 @@ export function InfiniteFeed() {
   };
 
   useEffect(() => {
-    fetchMore();
+    fetchMore().catch(console.error);
   }, []);
 
   useEffect(() => {
