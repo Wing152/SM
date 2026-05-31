@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  username          String    @unique
+  email             String    @unique
+  password          String
+  displayName       String?
+  bio               String?
+  profilePhoto      String?
+  predictionCount   Int       @default(0)
+  correctPredictions Int       @default(0)
+  incorrectPredictions Int     @default(0)
+  accuracyRate      Float     @default(0)
+  currentStreak     Int       @default(0)
+  longestStreak     Int       @default(0)
+  trustScore        Float     @default(50.0)
+  rank              String    @default("ROOKIE")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  predictions       Prediction[]
+  votes             Vote[]
+  comments          Comment[]
+  commentLikes      CommentLike[]
+  achievements      UserAchievement[]
+  followers         Follow[]          @relation("following")
+  following         Follow[]          @relation("follower")
+  communities       CommunityMember[]
+  managedCommunities Community[]      @relation("moderator")
+  sentMessages      Message[]         @relation("sentMessages")
+  receivedMessages  Message[]         @relation("receivedMessages")
+  notifications     Notification[]
+  reports           Report[]          @relation("reporter")
+  moderatedReports  Report[]          @relation("moderator")
+
+  isBanned          Boolean   @default(false)
+  role              String    @default("USER")
+}
+
+model Prediction {
+  id                String    @id @default(cuid())
+  title             String
+  explanation       String
+  category          String
+  confidence        Int
+  targetDate        DateTime
+  tags              String
+  visibility        String    @default("PUBLIC")
+  status            String    @default("PENDING")
+
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+
+  votes             Vote[]
+  comments          Comment[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  communityId       String?
+  community         Community? @relation(fields: [communityId], references: [id])
+
+  @@index([category])
+  @@index([status])
+}
+
+model Vote {
+  id                String    @id @default(cuid())
+  type              String
+  predictionId      String
+  prediction        Prediction @relation(fields: [predictionId], references: [id])
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  createdAt         DateTime  @default(now())
+
+  @@unique([userId, predictionId])
+}
+
+model Comment {
+  id                String    @id @default(cuid())
+  content           String
+  predictionId      String
+  prediction        Prediction @relation(fields: [predictionId], references: [id])
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+
+  parentId          String?
+  parent            Comment?   @relation("CommentToComment", fields: [parentId], references: [id])
+  replies           Comment[]  @relation("CommentToComment")
+
+  likes             CommentLike[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model CommentLike {
+  id                String    @id @default(cuid())
+  commentId         String
+  comment           Comment   @relation(fields: [commentId], references: [id])
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, commentId])
+}
+
+model Community {
+  id                String    @id @default(cuid())
+  name              String    @unique
+  description       String?
+  rules             String?
+  image             String?
+
+  members           CommunityMember[]
+  predictions       Prediction[]
+
+  moderatorId       String
+  moderator         User      @relation("moderator", fields: [moderatorId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model CommunityMember {
+  id                String    @id @default(cuid())
+  communityId       String
+  community         Community @relation(fields: [communityId], references: [id])
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  role              String    @default("MEMBER")
+  joinedAt          DateTime  @default(now())
+
+  @@unique([userId, communityId])
+}
+
+model Achievement {
+  id                String    @id @default(cuid())
+  name              String    @unique
+  description       String
+  icon              String
+  users             UserAchievement[]
+}
+
+model UserAchievement {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  achievementId     String
+  achievement       Achievement @relation(fields: [achievementId], references: [id])
+  unlockedAt        DateTime  @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+model Follow {
+  id                String    @id @default(cuid())
+  followerId        String
+  follower          User      @relation("follower", fields: [followerId], references: [id])
+  followingId       String
+  following         User      @relation("following", fields: [followingId], references: [id])
+  createdAt         DateTime  @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+model Message {
+  id                String    @id @default(cuid())
+  content           String
+  senderId          String
+  sender            User      @relation("sentMessages", fields: [senderId], references: [id])
+  receiverId        String
+  receiver          User      @relation("receivedMessages", fields: [receiverId], references: [id])
+  readAt            DateTime?
+  createdAt         DateTime  @default(now())
+}
+
+model Notification {
+  id                String    @id @default(cuid())
+  type              String
+  content           String
+  isRead            Boolean   @default(false)
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+
+  link              String?
+  createdAt         DateTime  @default(now())
+}
+
+model Report {
+  id                String    @id @default(cuid())
+  reason            String
+  status            String    @default("PENDING")
+
+  reporterId        String
+  reporter          User      @relation("reporter", fields: [reporterId], references: [id])
+
+  targetType        String
+  targetId          String
+
+  moderatorId       String?
+  moderator         User?     @relation("moderator", fields: [moderatorId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}

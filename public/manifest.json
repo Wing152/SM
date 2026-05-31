@@ -1,0 +1,16 @@
+{
+  "name": "Valen Prediction Network",
+  "short_name": "Valen",
+  "description": "A social network for forecasting the future.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
