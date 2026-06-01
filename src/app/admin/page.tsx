@@ -72,19 +72,15 @@ export default function AdminDashboard() {
 
         <div className="space-y-8">
           <GlassCard className="p-8 border-amber-500/20">
-            <h3 className="text-lg font-bold text-white mb-4">Admin Stats</h3>
+            <h3 className="text-lg font-bold text-white mb-4">Admin Overview</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-400 font-medium">Active Users</span>
-                <span className="text-sm font-bold text-white">1,284</span>
+                <span className="text-sm text-slate-400 font-medium">Active Reports</span>
+                <span className="text-sm font-bold text-white">{reports.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-400 font-medium">Predictions today</span>
-                <span className="text-sm font-bold text-white">+142</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-400 font-medium">Banned accounts</span>
-                <span className="text-sm font-bold text-red-500">12</span>
+                <span className="text-sm text-slate-400 font-medium">System Status</span>
+                <span className="text-sm font-bold text-emerald-500 uppercase text-[10px]">Active</span>
               </div>
             </div>
           </GlassCard>

@@ -84,8 +84,8 @@ export default function RootLayout({
                 </div>
 
                 <div className="mt-auto p-6 rounded-3xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-white/5">
-                  <h4 className="text-xs font-black text-blue-500 uppercase tracking-widest mb-2">Live Insights</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed font-medium">942 predictions resolved in the last 24h.</p>
+                  <h4 className="text-xs font-black text-blue-500 uppercase tracking-widest mb-2">Valen Status</h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed font-medium">Credibility-backed forecasting network active.</p>
                 </div>
               </aside>
 
