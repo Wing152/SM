@@ -14,6 +14,9 @@ export async function proxy(req: NextRequest) {
   const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/signup");
   const isApiRoute = pathname.startsWith("/api");
   const isPublicAsset =
+    pathname.endsWith(".json") ||
+    pathname.endsWith(".png") ||
+    pathname.endsWith(".ico") ||
     pathname.includes(".") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/icons");
