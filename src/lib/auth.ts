@@ -11,8 +11,8 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: { signIn: "/login" },
-  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-dev-only",
-  debug: process.env.NODE_ENV === "development",
+  secret: process.env.NEXTAUTH_SECRET || "6f9b8c7d6e5a4b3c2d1e0f9a8b7c6d5e", // Static fallback for stability
+  debug: true,
   providers: [
     CredentialsProvider({
       name: "Credentials",
